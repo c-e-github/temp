@@ -359,10 +359,15 @@ dadurch wird das div immer angezeigt, und nur ein inverter -->
                                         type="number"
                                         name="inputAutoLimit"
                                         class="form-control"
+                                        :class="{'is-invalid': autoLimitInvalid}"
                                         id="inputAutoLimit"
                                         :min="targetAutoMin"
                                         :max="targetAutoMax"
-                                        v-model="targetLimitList.autolimit_value">
+                                        v-model.number="targetLimitList.autolimit_value"
+                                        @change="checkAutoLimit">
+                                    <div class="invalid-feedback">
+                                        {{ $t('home.Invalidmaxleistung') }}  
+                                    </div>
                                 </div>
                                 <!-- Zusatztext -->
                                 <div class="col-12 col-md-auto">
@@ -697,19 +702,23 @@ liveData: {
        }
     },
 
-   computed: {
-      //###################### damit nur ein inverter angezeigt wird ######################
-      inverter() {
-          return this.inverterData[0];
-      },
+    computed: {
+        //###################### damit nur ein inverter angezeigt wird ######################
+        inverter() {
+            return this.inverterData[0];
+        },
 
+        autoLimitInvalid() {
+            const val = this.targetLimitList.autolimit_value;
+            return val < this.targetAutoMin || val > this.targetAutoMax;
+        },
 
-//      firstInverter() {
-  //       this.updatelorabutton();
-    //     this.updatedisplaybutton(); 
-      //   return this.inverterData.length > 0 ? [this.inverterData[0]] : [];
-      //},
-      //#################################################################################
+       //      firstInverter() {
+       //       this.updatelorabutton();
+       //     this.updatedisplaybutton(); 
+       //   return this.inverterData.length > 0 ? [this.inverterData[0]] : [];
+       //},
+       //#################################################################################
       displayTooltip() {
           return this.liveData.total?.DisplayOff 
           ? this.$t('home.toggleDisplayOn') 
@@ -740,7 +749,14 @@ liveData: {
    },
 
 
-   methods: {
+    methods: {
+
+        checkAutoLimit() {
+            const val = this.targetLimitList.autolimit_value;
+            if (val < this.targetAutoMin) this.targetLimitList.autolimit_value = this.targetAutoMin;
+            if (val > this.targetAutoMax) this.targetLimitList.autolimit_value = this.targetAutoMax;
+        },
+
       updatedisplaybutton(){
          if (this.liveData.inverters[0].producing){
             auracolor = "#198754";
@@ -759,7 +775,6 @@ liveData: {
                temp = document.getElementById("auraD");
                if (temp){
                   temp.style.background = `radial-gradient(circle at center, ${auracolor}, ${auracolor} 80%)`;
-
                }
             } else {
                temp.style.backgroundColor='lightgreen';
@@ -1063,14 +1078,14 @@ liveData: {
                 const response = await fetch("/api/limit/setmaxleistung", {
                     method: "POST",
                     headers: authHeader(),
-                    body: JSON.stringify({ automaxleistung: this.targetLimitList.autolimit_value }),
+                    body: JSON.stringify({ maxleistung: this.targetLimitList.autolimit_value }),
                 });
                 if (!response.ok) {
                     const text = await response.text();
                     throw new Error(`Setmaxleistung failed: ${response.status} - ${text}`);
                 }
             } catch (error) {
-                console.error("Setting automaxleistung failed:", error);
+                console.error("Setting maxleistung failed:", error);
             }
         },
 
