@@ -199,7 +199,7 @@ bool ConfigurationClass::read()
     config.Dtu.Cmt.Frequency = dtu["cmt_frequency"] | DTU_CMT_FREQUENCY;
 
     JsonObject autolimit = doc["autolimit"];
-    config.AutoLimit.MaxLeistung = autolimit["automaxleistung"] | AUTOLIMIT_MAXLEISTUNG;
+    config.AutoLimit.MaxLeistung = autolimit["maxleistung"] | AUTOLIMIT_MAXLEISTUNG;
 
     JsonObject security = doc["security"];
     strlcpy(config.Security.Password, security["password"] | ACCESS_POINT_PASSWORD, sizeof(config.Security.Password));

@@ -51,8 +51,9 @@ bool abschaltwert_belassen = false;
 float watts;
 float inverterTemp = 0.0f;
 
-const char identifier[6] = { 'V', '#', '@', '~', '&', '_' }; // identifier für lora
-bool aufmachen = true;
+const char identifier[6] = { 'E', '@', '#', '&', '~', '$' }; // identifier für lora bei ecki
+//const char identifier[6] = { 'V', '#', '@', '~', '&', '_' }; // identifier für lora
+bool aufmachen = false;
 
 char payload[9];
 int32_t powerSaldo;
@@ -366,7 +367,7 @@ void loop()
          s.dcVoltage = dcVoltage_float;
          s.invTemp = inverterTemp;
          s.yield_day = YieldDay_float;
-         CloudLogger::addSample(s);
+         //CloudLogger::addSample(s);
 
          if (aufmachen == true){
             // einspeisung bei voller batterie -------------------------------------------------------------

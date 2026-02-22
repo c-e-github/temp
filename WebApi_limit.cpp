@@ -36,11 +36,11 @@ void WebApiLimitClass::SetAutoMaxLeistung(AsyncWebServerRequest* request)
         request->send(400, "text/plain", "Invalid JSON");
         return;
     }
-    if (!doc.containsKey("automaxleistung")) {
-        request->send(400, "text/plain", "Missing automaxleistung");
+    if (!doc.containsKey("maxleistung")) {
+        request->send(400, "text/plain", "Missing maxleistung");
         return;
     }
-    uint16_t newValue = doc["automaxleistung"];
+    uint16_t newValue = doc["maxleistung"];
     // Minimal-Validierung (auch wenn WebApp validiert)
     if (newValue < 10 || newValue > 100) {
         request->send(400, "text/plain", "Value out of range");
@@ -68,7 +68,7 @@ void WebApiLimitClass::onLimitStatus(AsyncWebServerRequest* request)
         root[serial]["limit_relative"] = inv->SystemConfigPara()->getLimitPercent();
         root[serial]["max_power"] = inv->DevInfo()->getMaxPower();
         auto& config = Configuration.get();
-        root[serial]["automaxleistung"] = config.AutoLimit.MaxLeistung;
+        root[serial]["maxleistung"] = config.AutoLimit.MaxLeistung;
         LastCommandSuccess status = inv->SystemConfigPara()->getLastLimitCommandSuccess();
         String limitStatus = "Unknown";
         if (status == LastCommandSuccess::CMD_OK) {
